@@ -195,9 +195,9 @@ def affine2theta(affine, input_w, input_h, target_w, target_h):
     return theta
 
 
-def blur_blending(im1, im2, mask):
+def blur_blending(im1, im2, mask_in):
 
-    mask *= 255.0
+    mask = (mask_in * 255.0)
 
     kernel = np.ones((10, 10), np.uint8)
     mask = cv2.erode(mask, kernel, iterations=1)
@@ -214,19 +214,19 @@ def blur_blending(im1, im2, mask):
     return np.array(im) / 255.0
 
 
-def blur_blending_cv2(im1, im2, mask):
+def blur_blending_cv2(im1, im2, mask_in):
 
-    mask *= 255.0
+    mask = (mask_in * 255)
 
     kernel = np.ones((9, 9), np.uint8)
     mask = cv2.erode(mask, kernel, iterations=3)
 
     mask_blur = cv2.GaussianBlur(mask, (25, 25), 0)
-    mask_blur /= 255.0
+    mask_blur = (mask_blur / 255.0)
 
     im = im1 * mask_blur + (1 - mask_blur) * im2
 
-    im /= 255.0
+    im = (im / 255.0)
     im = np.clip(im, 0.0, 1.0)
 
     return im
@@ -236,10 +236,10 @@ def blur_blending_cv2(im1, im2, mask):
 
 
 #     Image.composite(
-def Poisson_blending(im1, im2, mask):
+def Poisson_blending(im1, im2, mask_in):
 
     # mask=1-mask
-    mask *= 255
+    mask = (mask_in*255)
     kernel = np.ones((10, 10), np.uint8)
     mask = cv2.erode(mask, kernel, iterations=1)
     mask /= 255
@@ -256,9 +256,9 @@ def Poisson_blending(im1, im2, mask):
     return result / 255.0
 
 
-def Poisson_B(im1, im2, mask, center):
+def Poisson_B(im1, im2, mask_in, center):
 
-    mask *= 255
+    mask = (mask_in * 255)
 
     result = cv2.seamlessClone(
         im2.astype("uint8"), im1.astype("uint8"), mask.astype("uint8"), center, cv2.NORMAL_CLONE
